@@ -2,6 +2,8 @@
 #include <QDir>
 
 const static int number_of_bytes = 8;
+const static int ascii_dec_A     = 65;
+const static int ascii_dec_zero  = 48;
 
 Modificator::Modificator(QList<QString> in_files,
                          QString in,
@@ -62,14 +64,34 @@ QSharedPointer<QByteArray> Modificator::read_from_file(QFile* file) const{
 }
 
 bool Modificator::do_operation(QSharedPointer<QByteArray> in_data) const{
-    for (int i = 0; i < number_of_bytes; i++){
-        (*in_data)[i] = do_xor(in_data->at(i), var_->at(i));
+    for (int i = 0, var_counter = 0; i < number_of_bytes; i++, var_counter++){
+        (*in_data)[i] = do_xor(in_data->at(i), var_->at(var_counter), var_->at(++var_counter));
     }
 
 }
 
-char Modificator::do_xor(char first, char second) const{
-    return first ^ second;
+// два символа входной переменной-строки соответствуют одному байту переменной
+char Modificator::do_xor(char inp, char var_first, char var_second) const{
+    quint8 data = inp - '0';
+    quint8 buf_var_first = char_to_int(var_first);
+    quint8 var = buf_var_first << 4 | char_to_int(var_second);
+    return (char)data ^ var;
+}
+
+quint8 Modificator::char_to_int(QChar symbol) const{
+    int ascii_dec = symbol.unicode();
+    int counter   = 0;
+    quint8 rez    = 0;
+    if (ascii_dec >= ascii_dec_zero && ascii_dec < ascii_dec_zero + 10){
+        counter += ascii_dec - ascii_dec_zero;
+    }
+    if (ascii_dec >= ascii_dec_A && ascii_dec < ascii_dec_A + 6){
+        counter += ascii_dec - ascii_dec_A + 10;
+    }
+    for (int i = 0; i < counter; i++){
+        rez = rez + 1;
+    }
+    return rez;
 }
 
 bool Modificator::write_to_file(const QFile* in_file, const QDir* out_dir, const QSharedPointer<QByteArray> data) const{
