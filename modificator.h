@@ -38,7 +38,7 @@ private:
     QSharedPointer<QByteArray> read_from_file(QFile* file)      const;
     bool do_operation(QSharedPointer<QByteArray> in_data)       const;
     bool rm_file(QFile* file)                                   const;
-    char do_xor(char inp, char var_first, char var_second)      const;
+    char do_xor(char inp, QChar var_first, QChar var_second)    const;
     QString modification_out_file_name(const QFile* file)       const;
     bool is_file_name_exist(const QFile* file, const QDir* dir) const;
     bool write_to_file(const QFile* in_file, const QDir* out_dir, const QSharedPointer<QByteArray> data) const;

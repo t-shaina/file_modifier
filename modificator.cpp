@@ -57,28 +57,32 @@ QSharedPointer<QByteArray> Modificator::modification(QFile* file) const{
 
 QSharedPointer<QByteArray> Modificator::read_from_file(QFile* file) const{
     int zeroes_count = number_of_bytes - file->bytesAvailable();
+    //QDataStream in_stream(file);
     QByteArray* in   = new QByteArray(file->readAll());
     in->insert(0, zeroes_count, '0');
     const QSharedPointer<QByteArray> in_ptr (in);
     return in_ptr;
 }
 
+// считается, что входные данные представлены потоком байт, не строковым предсталением
+// операция производится над всеми входными байтами
 bool Modificator::do_operation(QSharedPointer<QByteArray> in_data) const{
-    for (int i = 0, var_counter = 0; i < number_of_bytes; i++, var_counter++){
+    quint8 test_var = char_to_int(in_data->at(0));
+    for (int i = 0, var_counter = 0; i < in_data->size(); i++, var_counter++){
         (*in_data)[i] = do_xor(in_data->at(i), var_->at(var_counter), var_->at(++var_counter));
     }
 
 }
 
 // два символа входной переменной-строки соответствуют одному байту переменной
-char Modificator::do_xor(char inp, char var_first, char var_second) const{
-    quint8 data = inp - '0';
+char Modificator::do_xor(char inp, QChar var_first, QChar var_second) const{
     quint8 buf_var_first = char_to_int(var_first);
     quint8 var = buf_var_first << 4 | char_to_int(var_second);
-    return (char)data ^ var;
+    return inp ^ var;
 }
 
 quint8 Modificator::char_to_int(QChar symbol) const{
+    symbol.toUpper();
     int ascii_dec = symbol.unicode();
     int counter   = 0;
     quint8 rez    = 0;
@@ -137,3 +141,5 @@ QString Modificator::modification_out_file_name(const QFile* file) const{
 bool Modificator::is_file_name_exist(const QFile* file, const QDir* dir) const{
     return dir->exists(file->fileName());
 }
+
+
