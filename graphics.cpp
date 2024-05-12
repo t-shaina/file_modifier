@@ -86,10 +86,11 @@ Graphics::Graphics(QWidget* parent, int width, int height)
     this->show();
 
     connect(accept_button, SIGNAL(clicked()), this, SLOT(on_accept_button_clicked()));
-    connect(in_dir_group->get_button(), SIGNAL(clicked()), this, SLOT(create_file_system_dialog()));
-    connect(out_dir_group->get_button(), SIGNAL(clicked()), this, SLOT(create_file_system_dialog()));
-    //connect(in_dir_group->get_button()->, SIGNAL(directory_selected(const QString)), this, SLOT(set_edit(const QString)));
-    //connect(dialog, SIGNAL(cancel_button_selected()), this, SLOT(destroy_dialog()));
+    connect(in_dir_group->get_button(), SIGNAL(clicked()), in_dir_group, SLOT(create_file_system_dialog()));
+    connect(out_dir_group->get_button(), SIGNAL(clicked()), out_dir_group, SLOT(create_file_system_dialog()));
+    connect(in_dir_group->get_dialog(), SIGNAL(directory_selected(QString)), in_dir_group, SLOT(set_edit(QString)));
+    connect(out_dir_group->get_dialog(), SIGNAL(directory_selected(QString)), out_dir_group, SLOT(set_edit(QString)));
+    connect(in_dir_group->get_dialog(), SIGNAL(cancel_button_selected()), this, SLOT(destroy_dialog()));
     //connect(dialog, SIGNAL(dialog_finished(int)), this, SLOT(on_dialog_finished(int)));
 }
 
@@ -138,6 +139,7 @@ void Graphics::settingg_check_box(bool is_default_setting){
     rm_check_box->setCheckable(true);
 }
 
+
 void Graphics::on_accept_button_clicked(){
     emit settings_ready();
 }
@@ -170,5 +172,9 @@ int Graphics::get_interval_sec() const{
 }
 
 QString Graphics::get_var() const{
-    return var_edit->placeholderText();
+    QString var     = var_edit->placeholderText().toUpper();
+    int zeros_count = number_of_bytes - var.size();
+    for (int i = 0; i < zeros_count; i++)
+        var.insert(0, '0');
+    return var;
 }

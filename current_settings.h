@@ -13,7 +13,7 @@ public:
     bool is_removable_;
     bool is_rewrite_;
     int interval_sec_;
-    QVector<bool>* var_;
+    QString* var_;
 
     Current_settings(QString in_directory,
                      QString mask,
@@ -28,8 +28,6 @@ public:
     Current_settings(Current_settings && other)                = delete;
     Current_settings& operator=(Current_settings && other)     = delete;
 
-private:
-    QVector<bool> str_to_vec(const QString str);
 };
 
 #endif // CURRENT_SETTINGS_H

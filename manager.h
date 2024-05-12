@@ -25,7 +25,6 @@ private:
 
     QVector<QString> apply_mask(QString* in_dir, QString* mask) const;
     QString adding_slash(QString* dir)                          const;
-    Modificator::Action str_to_action(QString* act)             const;
 
 public slots:
 

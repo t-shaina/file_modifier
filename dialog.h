@@ -32,7 +32,7 @@ private slots:
 
 signals:
 
-    void directory_selected(const QString);
+    void directory_selected(QString);
     void cancel_button_selected();
     void ok_alert_button_selected();
     void dialog_finished(int);

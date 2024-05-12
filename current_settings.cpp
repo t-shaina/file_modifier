@@ -13,7 +13,7 @@ Current_settings::Current_settings(QString in_directory,
     is_removable_  = is_removable;
     is_rewrite_    = is_rewrite;
     interval_sec_  = interval_sec;
-    var_           = new QVector<bool>(str_to_vec(var));
+    var_           = new QString(var);
 }
 
 Current_settings::~Current_settings(){
@@ -23,6 +23,3 @@ Current_settings::~Current_settings(){
     delete var_;
 }
 
-QVector<bool> Current_settings::str_to_vec(QString str){
-    return QVector<bool>();
-}

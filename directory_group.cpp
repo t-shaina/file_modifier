@@ -38,10 +38,10 @@ Directory_group::~Directory_group(){
 }
 
 void Directory_group::create_file_system_dialog(){
-    dialog = new Dialog(static_cast<QWidget*>(sender()), true);
+    dialog = new Dialog(this, true);
 }
 
-void Directory_group::set_edit(const QString text){
+void Directory_group::set_edit(QString text){
     edit->setText(text);
 }
 
@@ -59,4 +59,12 @@ QString Directory_group::get_dir() const{
 
 QPushButton* Directory_group::get_button() const{
     return button;
+}
+
+Dialog* Directory_group::get_dialog() const{
+    return dialog;
+}
+
+QLineEdit* Directory_group::get_edit() const{
+    return edit;
 }

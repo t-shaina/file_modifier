@@ -1,6 +1,8 @@
 #include "manager.h"
 #include <QDir>
 
+const static int sec_to_msec = 1000;
+
 Manager::Manager(QObject *parent) {
     timer = new QTimer(parent);
     modificator = nullptr;
@@ -19,8 +21,8 @@ void Manager::processing(const Current_settings* setting){
                                   adding_slash(setting->out_directory_),
                                   setting->is_removable_,
                                   setting->is_rewrite_,
-                                  setting->var_);
-    timer->setInterval(setting->interval_sec_ * 1000);
+                                  setting->var_->toLocal8Bit());
+    timer->setInterval(setting->interval_sec_ * sec_to_msec);
     working();
 }
 
@@ -55,7 +57,3 @@ void Manager::files_open(const QList<QString> files) {
     emit has_problem_with_files(files);
 }
 
-Modificator::Action Manager::str_to_action(QString* act) const{
-    if (*act == "Модифицировать") return Modificator::Modification;
-    else return Modificator::Rewrite;
-}

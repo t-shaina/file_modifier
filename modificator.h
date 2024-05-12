@@ -2,14 +2,13 @@
 #define MODIFICATOR_H
 
 #include <QObject>
-#include <QVector>
+#include <QByteArray>
 #include <QList>
 #include <QFile>
 #include <QDir>
 
 class Modificator : public QObject{
     Q_OBJECT
-    Q_ENUMS(Actions)
 
 public:
 
@@ -18,18 +17,13 @@ public:
                 QString out,
                 bool rm_state,
                 bool rewrite_state,
-                QVector<bool>* var);
+                QByteArray var);
     ~Modificator();
     Modificator(Modificator const & other)            = delete;
     Modificator& operator=(Modificator const & other) = delete;
     Modificator(Modificator && other)                 = delete;
     Modificator& operator=(Modificator && other)      = delete;
     int modification();
-
-    enum Action {
-        Rewrite = 0,
-        Modification
-    };
 
 private:
 
@@ -38,15 +32,16 @@ private:
     const QDir* out_dir_;
     bool rm_state_;
     bool rewrite_state_;
-    const QVector<bool>* var_;
+    const QByteArray* var_;
 
-
-    QSharedPointer<QByteArray> bool_operation(QFile* file) const;
-    QSharedPointer<QByteArray> do_xor(QFile* file) const;
-    bool rm_file(QFile* file) const;
-    bool write_to_file(const QFile* in_file, const QDir* out_dir, const QSharedPointer<QByteArray> data) const;
-    QString modification_out_file_name(const QFile* file) const;
+    QSharedPointer<QByteArray> modification(QFile* file)        const;
+    QSharedPointer<QByteArray> read_from_file(QFile* file)      const;
+    bool do_operation(QSharedPointer<QByteArray> in_data)       const;
+    bool rm_file(QFile* file)                                   const;
+    char do_xor(char first, char second)                        const;
+    QString modification_out_file_name(const QFile* file)       const;
     bool is_file_name_exist(const QFile* file, const QDir* dir) const;
+    bool write_to_file(const QFile* in_file, const QDir* out_dir, const QSharedPointer<QByteArray> data) const;
 
 signals:
 

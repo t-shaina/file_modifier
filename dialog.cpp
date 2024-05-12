@@ -59,6 +59,7 @@ void Dialog::create_file_system_dialog(){
 
     connect(cancel_button, SIGNAL(clicked()), this, SLOT(on_cancel_button_clicked()));
     connect(ok_button, SIGNAL(clicked()), this, SLOT(on_ok_button_clicked()));
+
 }
 
 Dialog::~Dialog(){

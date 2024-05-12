@@ -18,8 +18,10 @@ public:
     Directory_group& operator=(Directory_group const& other) = delete;
     Directory_group(Directory_group && other)                = delete;
     Directory_group& operator=(Directory_group && other)     = delete;
-    QString get_dir() const;
+    QString get_dir()         const;
     QPushButton* get_button() const;
+    Dialog* get_dialog()      const;
+    QLineEdit* get_edit()     const;
 
 private:
 
@@ -30,7 +32,7 @@ private:
 private slots:
 
     void create_file_system_dialog();
-    void set_edit(const QString);
+    void set_edit(QString);
     void destroy_dialog();
     void on_dialog_finished(int);
 };

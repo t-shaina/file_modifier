@@ -1,18 +1,20 @@
 #include "modificator.h"
 #include <QDir>
 
+const static int number_of_bytes = 8;
+
 Modificator::Modificator(QList<QString> in_files,
                          QString in,
                          QString out,
                          bool rm_state,
                          bool rewrite_state,
-                         QVector<bool>* var){
+                         QByteArray var){
     in_files_       = new QList<QString>(in_files);
     in_dir_         = new QDir(in);
     out_dir_        = new QDir(out);
     rm_state_       = rm_state;
     rewrite_state_  = rewrite_state;
-    var_            = var;
+    var_            = new QByteArray(var);
 }
 
 Modificator::~Modificator(){
@@ -32,7 +34,7 @@ int Modificator::modification(){
             open_files.push_back(in_files_->at(i));
         }
         else {
-            QSharedPointer<QByteArray> data = bool_operation(current_file);
+            QSharedPointer<QByteArray> data = modification(current_file);
             write_to_file(current_file, out_dir_, data);
             if(rm_state_) rm_file(current_file);
         }
@@ -42,19 +44,32 @@ int Modificator::modification(){
     return 1;
 }
 
-QSharedPointer<QByteArray> Modificator::bool_operation(QFile* file) const{
+QSharedPointer<QByteArray> Modificator::modification(QFile* file) const{
     if (!file->open(QIODeviceBase::ReadOnly)) return nullptr;
-    QSharedPointer<QByteArray> data = do_xor(file);
+    if (file->bytesAvailable() == 0) return nullptr;
+    QSharedPointer<QByteArray> data = read_from_file(file);
+    bool operation_state            = do_operation(data);
     file->close();
     return data;
 }
 
-QSharedPointer<QByteArray> Modificator::do_xor(QFile* file) const{
-    QByteArray* in = new QByteArray(file->readAll());
+QSharedPointer<QByteArray> Modificator::read_from_file(QFile* file) const{
+    int zeroes_count = number_of_bytes - file->bytesAvailable();
+    QByteArray* in   = new QByteArray(file->readAll());
+    in->insert(0, zeroes_count, '0');
     const QSharedPointer<QByteArray> in_ptr (in);
-    //if (in->length() < 8) //
-
     return in_ptr;
+}
+
+bool Modificator::do_operation(QSharedPointer<QByteArray> in_data) const{
+    for (int i = 0; i < number_of_bytes; i++){
+        (*in_data)[i] = do_xor(in_data->at(i), var_->at(i));
+    }
+
+}
+
+char Modificator::do_xor(char first, char second) const{
+    return first ^ second;
 }
 
 bool Modificator::write_to_file(const QFile* in_file, const QDir* out_dir, const QSharedPointer<QByteArray> data) const{
