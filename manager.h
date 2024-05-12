@@ -8,6 +8,7 @@
 #include <QTimer>
 
 class Manager : public QObject{
+
     Q_OBJECT
 
 public:
@@ -20,6 +21,7 @@ public:
     Manager& operator=(Manager && other)      = delete;
 
 private:
+
     QTimer* timer;
     Modificator* modificator;
 

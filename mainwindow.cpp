@@ -7,8 +7,8 @@ const static int window_width    = 960;
 const static int window_height   = 540;
 const static QString window_font = "Cochin";
 
-MainWindow::MainWindow(QApplication* parent)
-    : QMainWindow()
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , graphics(new Graphics(this, window_width, window_height)){
     ui->setupUi(this);
@@ -18,7 +18,7 @@ MainWindow::MainWindow(QApplication* parent)
     this->setAttribute(Qt::WA_DeleteOnClose);
     this->setEnabled(true);
     settings = nullptr;
-    connect(graphics, SIGNAL(settings_ready()), this, SLOT(on_settings_ready()));
+    connect(graphics, SIGNAL(settings_ready()), this, SLOT(keep_settings()));
 }
 
 MainWindow::~MainWindow(){
@@ -27,7 +27,7 @@ MainWindow::~MainWindow(){
     delete settings;
 }
 
-void MainWindow::on_settings_ready(){
+void MainWindow::keep_settings(){
     settings = new Current_settings(graphics->get_in_dir(),
                                     graphics->get_mask(),
                                     graphics->get_out_dir(),
@@ -38,6 +38,6 @@ void MainWindow::on_settings_ready(){
     emit form_worked(settings);
 }
 
-void MainWindow::on_has_problem_with_files(const QList<QString> files){
+void MainWindow::problem_with_files(const QList<QString> files){
     Dialog msg(this, false, files);
 }

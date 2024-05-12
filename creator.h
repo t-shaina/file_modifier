@@ -6,7 +6,8 @@
 #include "mainwindow.h"
 #include "manager.h"
 
-class Creator:  public QObject {
+class Creator:  public QObject{
+
     Q_OBJECT
 
     MainWindow* main_window;

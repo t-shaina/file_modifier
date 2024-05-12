@@ -6,6 +6,7 @@
 #include <QTreeView>
 
 class Dialog : public QDialog{
+
     Q_OBJECT
 
 public:
@@ -18,6 +19,7 @@ public:
     Dialog& operator=(Dialog && other)      = delete;
 
 private:
+
     QVBoxLayout* main_layout;
     QTreeView* file_system_view;
     void create_file_system_dialog();

@@ -7,6 +7,7 @@
 class Current_settings{
 
 public:
+
     QString* in_directory_;
     QString* mask_;
     QString* out_directory_;

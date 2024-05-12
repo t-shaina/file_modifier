@@ -13,6 +13,7 @@
 #include <QGridLayout>
 
 class Graphics : public QWidget{
+
     Q_OBJECT
 
 public:
@@ -42,6 +43,7 @@ private:
     QLineEdit* var_edit;
     QPushButton* accept_button;
     QGridLayout* layout;
+    QVector<QSharedPointer<QLabel>>* labels;
 
     void setting_combo_boxes(bool is_default_setting = true);
     void setting_edits(bool is_default_setting = true);

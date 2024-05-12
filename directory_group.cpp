@@ -21,14 +21,16 @@ Directory_group::Directory_group(QWidget* parent, int width, int height)
     button->setFixedSize(QSize(buttons_width, buttons_height));
     edit->setFixedHeight(buttons_height);
     edit->setFixedWidth(width - horizontal_spacing - buttons_width - l_dir_group_margin - r_dir_group_margin);
-    layout->addWidget(edit, Qt::AlignLeft | Qt::AlignJustify);
+    layout->addWidget(edit, Qt::AlignLeft    | Qt::AlignJustify);
     layout->addWidget(button, Qt::AlignRight | Qt::AlignJustify);
     layout->setSpacing(horizontal_spacing);
     //this->setContentsMargins(l_dir_group_margin, t_dir_group_margin, r_dir_group_margin, b_dir_group_margin);
     this->setLayout(layout);
     this->setFixedSize(QSize(width, height));
-
-
+    connect(button, SIGNAL(clicked()), this, SLOT(create_file_system_dialog()));
+    //connect(dialog, SIGNAL(directory_selected(QString)), this, SLOT(set_edit(QString)));
+    //connect(dialog, SIGNAL(cancel_button_selected()), this, SLOT(destroy_dialog()));
+    //connect(dialog, SIGNAL(dialog_finished(int)), this, SLOT(on_dialog_finished(int)));
 }
 
 Directory_group::~Directory_group(){
@@ -46,7 +48,7 @@ void Directory_group::set_edit(QString text){
 }
 
 void Directory_group::destroy_dialog(){
-    delete dialog;
+    dialog = nullptr;
 }
 
 void Directory_group::on_dialog_finished(int){

@@ -8,6 +8,7 @@
 #include <QLineEdit>
 
 class Directory_group : public QGroupBox{
+
     Q_OBJECT
 
 public:

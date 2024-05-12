@@ -1,13 +1,17 @@
 #ifndef MODIFICATOR_H
 #define MODIFICATOR_H
 
+//#include "manager.h"
 #include <QObject>
 #include <QByteArray>
 #include <QList>
 #include <QFile>
 #include <QDir>
 
+class Manager;
+
 class Modificator : public QObject{
+
     Q_OBJECT
 
 public:

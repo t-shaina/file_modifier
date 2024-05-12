@@ -14,13 +14,12 @@ class MainWindow;
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow{
-    Q_OBJECT
 
-    Graphics* graphics;
+    Q_OBJECT    
 
 public:
 
-    MainWindow(QApplication* parent = nullptr);
+    MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
     MainWindow(MainWindow const& other)        = delete;
     MainWindow& other(MainWindow const& other) = delete;
@@ -30,8 +29,8 @@ public:
 
 public slots:
 
-    void on_settings_ready();
-    void on_has_problem_with_files(const QList<QString>);
+    void keep_settings();
+    void problem_with_files(const QList<QString>);
 
 signals:
 
@@ -40,5 +39,6 @@ signals:
 private:
 
     Ui::MainWindow *ui;
+    Graphics* graphics;
 };
 #endif // MAINWINDOW_H

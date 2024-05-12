@@ -5,9 +5,9 @@ const static int sec_to_msec = 1000;
 
 Manager::Manager(QObject *parent) {
     timer = new QTimer(parent);
-    modificator = nullptr;
-    connect(modificator, SIGNAL(these_files_open(const QList<QString>)), this, SLOT(files_open(const QList<QString>)));
+
     connect(timer, SIGNAL(timeout()), this, SLOT(working()));
+
 }
 
 Manager::~Manager(){
@@ -22,8 +22,10 @@ void Manager::processing(const Current_settings* setting){
                                   setting->is_removable_,
                                   setting->is_rewrite_,
                                   setting->var_->toLocal8Bit());
+    connect(modificator, SIGNAL(these_files_open(const QList<QString>)), this, SLOT(files_open(const QList<QString>)));
     timer->setInterval(setting->interval_sec_ * sec_to_msec);
     working();
+
 }
 
 void Manager::working(){

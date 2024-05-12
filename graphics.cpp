@@ -53,13 +53,20 @@ Graphics::Graphics(QWidget* parent, int width, int height)
     QLabel* action_label  = new QLabel(action_label_text, this);
     QLabel* timer_label   = new QLabel(timer_label_text, this);
     QLabel* var_label     = new QLabel(var_label_text, this);
+    labels = new QVector<QSharedPointer<QLabel>>(6);
+    labels->push_back(QSharedPointer<QLabel>(in_dir_label));
+    labels->push_back(QSharedPointer<QLabel>(mask_label));
+    labels->push_back(QSharedPointer<QLabel>(out_dir_label));
+    labels->push_back(QSharedPointer<QLabel>(action_label));
+    labels->push_back(QSharedPointer<QLabel>(timer_label));
+    labels->push_back(QSharedPointer<QLabel>(var_label));
 
     layout->addWidget(in_dir_label, 0, 0, Qt::AlignLeft       | Qt::AlignTop);
     layout->addWidget(in_dir_group, 0, 1, Qt::AlignCenter     | Qt::AlignTop);
     layout->addWidget(mask_label, 1, 0, Qt::AlignLeft         | Qt::AlignTop);
     layout->addWidget(mask_edit, 1, 1, Qt::AlignCenter        | Qt::AlignTop);
     layout->addWidget(out_dir_label, 2, 0, Qt::AlignLeft      | Qt::AlignTop);
-    layout->addWidget(out_dir_group, 2, 1, Qt::AlignCenter     | Qt::AlignTop);
+    layout->addWidget(out_dir_group, 2, 1, Qt::AlignCenter    | Qt::AlignTop);
     layout->addWidget(rm_check_box, 3, 1, Qt::AlignCenter     | Qt::AlignTop);
     layout->addWidget(action_label, 4, 0, Qt::AlignLeft       | Qt::AlignTop);
     layout->addWidget(action_combo_box, 4, 1, Qt::AlignCenter | Qt::AlignTop);
@@ -85,13 +92,9 @@ Graphics::Graphics(QWidget* parent, int width, int height)
     this->setLayout(layout);
     this->show();
 
-    connect(accept_button, SIGNAL(clicked()), this, SLOT(on_accept_button_clicked()));
-    connect(in_dir_group->get_button(), SIGNAL(clicked()), in_dir_group, SLOT(create_file_system_dialog()));
-    connect(out_dir_group->get_button(), SIGNAL(clicked()), out_dir_group, SLOT(create_file_system_dialog()));
-    connect(in_dir_group->get_dialog(), SIGNAL(directory_selected(QString)), in_dir_group, SLOT(set_edit(QString)));
-    connect(out_dir_group->get_dialog(), SIGNAL(directory_selected(QString)), out_dir_group, SLOT(set_edit(QString)));
-    connect(in_dir_group->get_dialog(), SIGNAL(cancel_button_selected()), this, SLOT(destroy_dialog()));
-    //connect(dialog, SIGNAL(dialog_finished(int)), this, SLOT(on_dialog_finished(int)));
+    connect(accept_button, SIGNAL(clicked()), this, SLOT(on_accept_button_clicked()));    
+
+
 }
 
 Graphics::~Graphics(){
@@ -104,6 +107,7 @@ Graphics::~Graphics(){
     delete var_edit;
     delete accept_button;
     delete layout;
+    delete labels;
 }
 
 void Graphics::setting_combo_boxes(bool is_default_setting){

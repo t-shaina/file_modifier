@@ -59,7 +59,9 @@ void Dialog::create_file_system_dialog(){
 
     connect(cancel_button, SIGNAL(clicked()), this, SLOT(on_cancel_button_clicked()));
     connect(ok_button, SIGNAL(clicked()), this, SLOT(on_ok_button_clicked()));
-
+    connect(this, SIGNAL(directory_selected(QString)), this->parent(), SLOT(set_edit(QString)));
+    connect(this, SIGNAL(cancel_button_selected()), this->parent(), SLOT(destroy_dialog()));
+    connect(this, SIGNAL(dialog_finished(int)), this->parent(), SLOT(on_dialog_finished(int)));
 }
 
 Dialog::~Dialog(){
