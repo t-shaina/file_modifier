@@ -19,10 +19,11 @@ void Manager::processing(const Current_settings* setting){
                                   *setting->out_directory_,
                                   setting->is_removable_,
                                   setting->is_rewrite_,
-                                  setting->var_->toLocal8Bit());
+                                  *setting->var_);
     connect(modificator, SIGNAL(these_files_open(const QList<QString>)), this, SLOT(files_open(const QList<QString>)));
-    if (setting->interval_sec_ != 0)
+    if (setting->interval_sec_ != 0){
         timer->setInterval(setting->interval_sec_ * sec_to_msec);
+    }
     working();
 
 }
@@ -36,7 +37,8 @@ QList<QString> Manager::apply_mask(QString* in_dir, QString* mask) const{
     QList<QString> masks;
     masks.push_back(*mask);
     QDir dir(*in_dir);
-    rez = dir.entryList(masks);
+    if (!mask->isEmpty()) rez = dir.entryList(masks, QDir::Files | QDir::Readable);
+    else rez = dir.entryList(QDir::Files | QDir::Readable);
     return rez;
 }
 

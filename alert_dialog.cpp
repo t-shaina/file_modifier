@@ -1,5 +1,6 @@
 #include "alert_dialog.h"
 
+const int max_count_of_files                  = 10;
 const static int dialog_window_width          = 500;
 const static int dialog_window_height         = 350;
 const static int horizontal_spacing           = 10;
@@ -16,19 +17,18 @@ Alert_dialog::Alert_dialog(QWidget* parent, const QList<QString> files)
     this->setFixedSize(dialog_window_width, dialog_window_height);
     main_layout->setSpacing(horizontal_spacing);
     QString msg   = alert_message_text;
-    int max_count =  20;
-    int count     = files.size() < max_count ? files.size() : max_count;
+    int count     = files.size() < max_count_of_files ? files.size() : max_count_of_files;
     for (int i = 0; i < count; ++i){
         msg += ' ';
         msg += files.at(i);
     }
-    QLabel* alert_label          = new QLabel(alert_message_text, this);
+    QLabel* alert_label          = new QLabel(msg, this);
     QPushButton* ok_alert_button = new QPushButton(ok_button_text, this);
     ok_alert_button->setFixedSize(QSize(buttons_width, buttons_height));
     main_layout->addWidget(alert_label, Qt::AlignHCenter   | Qt::AlignVCenter);
-    main_layout->addWidget(ok_alert_button, Qt::AlignRight | Qt::AlignVCenter);
+    main_layout->addWidget(ok_alert_button, Qt::AlignHCenter);
     this->setWindowTitle(alert_window_title);
-
+    alert_label->setWordWrap(true);
     connect(ok_alert_button, SIGNAL(clicked()), this, SLOT(on_ok_alert_button_clicked()));
     connect(this, SIGNAL(finished(int)), this, SLOT(dialog_finished(int)));
     this->show();
@@ -37,9 +37,10 @@ Alert_dialog::Alert_dialog(QWidget* parent, const QList<QString> files)
 }
 
 Alert_dialog::~Alert_dialog(){
-    delete alert_label;
-    delete ok_alert_button;
-    delete main_layout;    
+    delete main_layout;
+    //
+    //delete alert_label;
+    //delete ok_alert_button;
 }
 
 void Alert_dialog::on_ok_alert_button_clicked(){

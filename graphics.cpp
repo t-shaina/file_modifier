@@ -128,6 +128,7 @@ void Graphics::setting_edits(bool is_default_setting){
     mask_edit->setEnabled(is_default_setting);
     var_edit->setMaxLength(hex_length);
     var_edit->setInputMask("HHHHHHHHHHHHHHHH");
+    //var_edit->setCursorPosition(0);
     QFont var_edit_font (static_cast<QWidget*>(parent())->font().families(), 20, QFont::Thin);
     var_edit->setFont(var_edit_font);
 }
@@ -182,9 +183,10 @@ int Graphics::get_interval_sec() const{
 
 QString Graphics::get_var() const{
     QString var     = var_edit->placeholderText().toUpper();
-    int zeros_count = number_of_bytes - var.size();
+    int zeros_count = number_of_bytes * 2 - var.size();
     for (int i = 0; i < zeros_count; i++)
         var.insert(0, '0');
+    qDebug() << "in get var siz is " << var.size();
     return var;
 }
 
