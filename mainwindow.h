@@ -19,7 +19,7 @@ class MainWindow : public QMainWindow{
 
 public:
 
-    MainWindow(QWidget* parent = nullptr);
+    MainWindow(QApplication* parent = nullptr);
     ~MainWindow();
     MainWindow(MainWindow const& other)        = delete;
     MainWindow& other(MainWindow const& other) = delete;

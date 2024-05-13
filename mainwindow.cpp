@@ -7,16 +7,15 @@ const static int window_width    = 960;
 const static int window_height   = 540;
 const static QString window_font = "Cochin";
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-    , graphics(new Graphics(this, window_width, window_height)){
+MainWindow::MainWindow(QApplication* parent)
+    :/* QMainWindow(parent)
+    ,*/ ui(new Ui::MainWindow){
     ui->setupUi(this);
     this->setFixedSize(window_width, window_height);
     QFont main_window_font(window_font, 0, 0);
     this->setFont(main_window_font);
     this->setAttribute(Qt::WA_DeleteOnClose);
-    this->setEnabled(true);
+    graphics = new Graphics(this, window_width, window_height);
     settings = nullptr;
     connect(graphics, SIGNAL(settings_ready()), this, SLOT(keep_settings()));
 }

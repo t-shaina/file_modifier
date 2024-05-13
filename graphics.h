@@ -18,7 +18,7 @@ class Graphics : public QWidget{
 
 public:
 
-    Graphics(QWidget* parent = nullptr, int width = 500, int height = 350);
+    explicit Graphics( QWidget* parent = nullptr, int width = 500, int height = 350);
     ~Graphics();
     Graphics(Graphics const& other)            = delete;
     Graphics& operator=(Graphics const& other) = delete;
