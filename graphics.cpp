@@ -6,6 +6,7 @@
 #include <QStandardItemModel>
 
 const static int number_of_bytes                      = 8;
+const static int hex_length                           = 16;
 const static int ascii_diff_between_uppercase_letters = 55;
 const static int ascii_diff_between_lowercase_letters = 87;
 const static int but_height = 30;
@@ -84,7 +85,6 @@ Graphics::Graphics(QWidget* parent, int width, int height)
     for (int i = 0; i < rows_count; i++){
         layout->setRowMinimumHeight(i, (height - t_margin - b_margin - (rows_count - 1) * v_spacing) / rows_count);
     }
-
     setting_combo_boxes();
     setting_edits();
     setting_button();
@@ -92,9 +92,8 @@ Graphics::Graphics(QWidget* parent, int width, int height)
     this->setLayout(layout);
     this->show();
 
-    connect(accept_button, SIGNAL(clicked()), this, SLOT(on_accept_button_clicked()));    
-
-
+    connect(accept_button, SIGNAL(clicked()), this, SLOT(on_accept_button_clicked()));
+    connect(var_edit, SIGNAL(textEdited(QString)), this, SLOT(on_var_edit_edited()));
 }
 
 Graphics::~Graphics(){
@@ -127,16 +126,15 @@ void Graphics::setting_edits(bool is_default_setting){
     mask_edit->setFixedSize(right_column_width, label_height);
     var_edit->setFixedSize(right_column_width, label_height);
     mask_edit->setEnabled(is_default_setting);
-    var_edit->setEnabled(is_default_setting);
-    mask_edit->setModified(is_default_setting);
-    var_edit->setModified(is_default_setting);
-    mask_edit->setReadOnly(!is_default_setting);
-    var_edit->setReadOnly(!is_default_setting);
+    var_edit->setMaxLength(hex_length);
+    var_edit->setInputMask("HHHHHHHHHHHHHHHH");
+    QFont var_edit_font (static_cast<QWidget*>(parent())->font().families(), 20, QFont::Thin);
+    var_edit->setFont(var_edit_font);
 }
 
 void Graphics::setting_button(bool is_default_setting){
     accept_button->setFixedSize(but_width, but_height);
-    accept_button->setEnabled(is_default_setting);
+    accept_button->setEnabled(!is_default_setting);
 }
 
 void Graphics::settingg_check_box(bool is_default_setting){
@@ -153,7 +151,7 @@ QString Graphics::get_in_dir() const{
 }
 
 QString Graphics::get_mask() const{
-    return mask_edit->text();
+    return mask_edit->text().isEmpty() ?  QString() : mask_edit->text();
 }
 
 QString Graphics::get_out_dir() const{
@@ -171,8 +169,15 @@ bool Graphics::get_rewrite_state() const{
 }
 
 int Graphics::get_interval_sec() const{
-    int space_index = timer_combo_box->placeholderText().indexOf(" "); // \\s
-    return  timer_combo_box->placeholderText().sliced(0, space_index - 1).toInt();
+    //int space_index = timer_combo_box->placeholderText().indexOf("\\s"); // \\s
+    //return  timer_combo_box->placeholderText().sliced(0, space_index).toInt();
+    QString text = timer_combo_box->placeholderText();
+    QString interval;
+    for (int i = 0; i < text.size(); i++){
+        if (text.at(i) == ' ') break;
+        interval += text.at(i);
+    }
+    return interval.toInt();
 }
 
 QString Graphics::get_var() const{
@@ -181,4 +186,17 @@ QString Graphics::get_var() const{
     for (int i = 0; i < zeros_count; i++)
         var.insert(0, '0');
     return var;
+}
+
+void Graphics::on_var_edit_edited(){
+    if (!is_var_edit_correct())
+        accept_button->setEnabled(false);
+    else accept_button->setEnabled(true);
+}
+
+bool Graphics::is_var_edit_correct(){
+    if(var_edit->text().isEmpty() ||
+       var_edit->text().length() > hex_length)
+        return false;
+    else return true;
 }

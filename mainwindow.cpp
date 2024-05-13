@@ -17,6 +17,7 @@ MainWindow::MainWindow(QApplication* parent)
     this->setAttribute(Qt::WA_DeleteOnClose);
     graphics = new Graphics(this, window_width, window_height);
     settings = nullptr;
+    msg      = nullptr;
     connect(graphics, SIGNAL(settings_ready()), this, SLOT(keep_settings()));
 }
 
@@ -24,6 +25,7 @@ MainWindow::~MainWindow(){
     delete ui;
     delete graphics;
     delete settings;
+    delete msg;
 }
 
 void MainWindow::keep_settings(){
@@ -38,5 +40,15 @@ void MainWindow::keep_settings(){
 }
 
 void MainWindow::problem_with_files(const QList<QString> files){
-    Dialog msg(this, false, files);
+    msg = new Alert_dialog(this, files);
+    connect(msg, SIGNAL(ok_alert_button_selected()), this, SLOT(alert_msg_delivered()));
+    connect(msg, SIGNAL(alert_dialog_finished(int)), this, SLOT(dialog_finished(int)));
+}
+
+void MainWindow::alert_msg_delivered(){
+    // do something
+}
+
+void MainWindow::dialog_finished(int){
+    // do something
 }

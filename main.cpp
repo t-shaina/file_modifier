@@ -26,7 +26,6 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     Creator c(&a);
-
-    //MainWindow w;
+    MainWindow w;
     return a.exec();
 }

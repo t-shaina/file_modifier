@@ -49,9 +49,10 @@ private:
     void setting_edits(bool is_default_setting = true);
     void setting_button(bool is_default_setting = true);
     void settingg_check_box(bool is_default_setting = true);
+    bool is_var_edit_correct();
 
 private slots:
-
+   void on_var_edit_edited();
    void on_accept_button_clicked();
 
 signals:

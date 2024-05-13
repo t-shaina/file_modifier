@@ -3,6 +3,7 @@
 
 #include "current_settings.h"
 #include "graphics.h"
+#include "alert_dialog.h"
 
 #include <QMainWindow>
 
@@ -31,6 +32,8 @@ public slots:
 
     void keep_settings();
     void problem_with_files(const QList<QString>);
+    void alert_msg_delivered();
+    void dialog_finished(int);
 
 signals:
 
@@ -40,5 +43,6 @@ private:
 
     Ui::MainWindow *ui;
     Graphics* graphics;
+    Alert_dialog* msg;
 };
 #endif // MAINWINDOW_H

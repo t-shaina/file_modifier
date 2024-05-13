@@ -35,6 +35,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         dialog.h dialog.cpp
         directory_group.h directory_group.cpp
         current_settings.h current_settings.cpp
+        alert_dialog.h alert_dialog.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET file_modifier_shaina APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
