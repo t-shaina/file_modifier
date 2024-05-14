@@ -32,11 +32,11 @@ public slots:
 
     void processing(const Current_settings*);
     void working();
-    void files_open(const QList<QString>);
+    void files_open();
 
 signals:
 
-    void has_problem_with_files(const QList<QString>);
+    void has_problem_with_files();
 };
 
 #endif // MANAGER_H

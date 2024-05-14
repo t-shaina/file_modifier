@@ -1,13 +1,13 @@
 #include "alert_dialog.h"
 
 const int max_count_of_files                  = 10;
-const static int dialog_window_width          = 500;
-const static int dialog_window_height         = 350;
+const static int dialog_window_width          = 400;
+const static int dialog_window_height         = 150;
 const static int horizontal_spacing           = 10;
 const static QString ok_button_text           = "ОK";
 const static int buttons_height               = 30;
 const static int buttons_width                = 90;
-const static QString alert_message_text       = "Эти файлы открыты и не могут быть обработаны: ";
+const static QString alert_message_text       = "Некоторые файлы открыты и не могут быть обработаны ";
 const static QString alert_window_title       = " Проблема";
 
 
@@ -25,8 +25,8 @@ Alert_dialog::Alert_dialog(QWidget* parent, const QList<QString> files)
     QLabel* alert_label          = new QLabel(msg, this);
     QPushButton* ok_alert_button = new QPushButton(ok_button_text, this);
     ok_alert_button->setFixedSize(QSize(buttons_width, buttons_height));
-    main_layout->addWidget(alert_label, Qt::AlignHCenter   | Qt::AlignVCenter);
-    main_layout->addWidget(ok_alert_button, Qt::AlignHCenter);
+    main_layout->addWidget(alert_label, Qt::AlignVCenter);
+    main_layout->addWidget(ok_alert_button, Qt::AlignVCenter);
     this->setWindowTitle(alert_window_title);
     alert_label->setWordWrap(true);
     connect(ok_alert_button, SIGNAL(clicked()), this, SLOT(on_ok_alert_button_clicked()));

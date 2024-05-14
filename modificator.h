@@ -27,7 +27,7 @@ public:
     Modificator& operator=(Modificator const & other) = delete;
     Modificator(Modificator && other)                 = delete;
     Modificator& operator=(Modificator && other)      = delete;
-    int modification();
+    void modification();
 
 private:
 
@@ -38,19 +38,20 @@ private:
     bool rewrite_state_;
     const QString* var_;
 
-    QSharedPointer<QByteArray> file_modification(QFile* file)   const;
-    QSharedPointer<QByteArray> read_from_file(QFile* file)      const;
-    bool do_operation(QSharedPointer<QByteArray> in_data)       const;
-    bool rm_file(QFile* file)                                   const;
-    char do_xor(char inp, QChar var_first, QChar var_second)    const;
-    QString modification_out_file_name(const QFile* file)       const;
-    bool is_file_name_exist(const QFile* file, const QString* dir) const;
+    QSharedPointer<QByteArray> file_modification(QFile* file)                            const;
+    QSharedPointer<QByteArray> read_from_file(QFile* file)                               const;
+    bool do_operation(QSharedPointer<QByteArray> in_data)                                const;
+    bool rm_file(QFile* file)                                                            const;
+    char do_xor(char inp, QChar var_first, QChar var_second)                             const;
+    QString modification_out_file_name(const QString file_name)                          const;
+    QString choosing_valid_file_name_in_dir(const QString file_name, const QString* dir) const;
+    bool is_file_name_exist(const QString file_name, const QString* dir) const;
     bool write_to_file(const QFile* in_file, const QString* out_dir, const QSharedPointer<QByteArray> data) const;
     quint8 char_to_int(QChar symbol) const;
 
 signals:
 
-    void these_files_open(const QList<QString>);
+    void some_files_open();
 
 };
 

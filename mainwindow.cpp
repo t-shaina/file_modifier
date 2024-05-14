@@ -3,9 +3,10 @@
 
 #include <QFont>
 
-const static int window_width    = 960;
-const static int window_height   = 540;
-const static QString window_font = "Cochin";
+const static int window_width     = 960;
+const static int window_height    = 540;
+const static QString window_font  = "Cochin";
+const static QString window_title = "Модификатор файлов";
 
 MainWindow::MainWindow(QApplication* parent)
     :/* QMainWindow(parent)
@@ -15,6 +16,7 @@ MainWindow::MainWindow(QApplication* parent)
     QFont main_window_font(window_font, 0, 0);
     this->setFont(main_window_font);
     this->setAttribute(Qt::WA_DeleteOnClose);
+    this->setWindowTitle(window_title);
     graphics = new Graphics(this, window_width, window_height);
     settings = nullptr;
     connect(graphics, SIGNAL(settings_ready()), this, SLOT(keep_settings()));
@@ -37,8 +39,8 @@ void MainWindow::keep_settings(){
     emit form_worked(settings);
 }
 
-void MainWindow::problem_with_files(const QList<QString> files){
-    msg = new Alert_dialog(this, files);
+void MainWindow::problem_with_files(){
+    msg = new Alert_dialog(this);
     connect(msg, SIGNAL(ok_alert_button_selected()), this, SLOT(alert_msg_delivered()));
     connect(msg, SIGNAL(alert_dialog_finished(int)), this, SLOT(dialog_finished(int)));
 }

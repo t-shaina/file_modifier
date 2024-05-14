@@ -31,7 +31,7 @@ public:
 public slots:
 
     void keep_settings();
-    void problem_with_files(const QList<QString>);
+    void problem_with_files();
     void alert_msg_delivered();
     void dialog_finished(int);
 

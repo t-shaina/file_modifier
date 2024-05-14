@@ -20,7 +20,7 @@ const static int v_spacing  = 10;
 const static int h_spacing  = 30;
 const static int right_column_width = 300;
 const static int label_height       = 30;
-const static QString window_title       = "Модификатор файлов";
+
 const static QString in_dir_label_text  = "Выберите каталог входных файлов";
 const static QString mask_label_text    = "Выберите маску входных файлов";
 const static QString out_dir_label_text = "Выберите каталог выходных файлов";
@@ -29,8 +29,9 @@ const static QString action_label_text  = "При повторении имен�
 const static QString timer_label_text   = "Выберите периодичность срабатывания таймера";
 const static QString var_label_text     = "Введите hex-значение переменной";
 const static QString accept_button_text = "Применить";
-const static QStringList action_combo_box_list = QStringList() << "Перезаписать файлы"
-                                                               << "Модифицировать названия файлов";
+const static QStringList action_combo_box_list = QStringList() << "Модифицировать названия файлов"
+                                                               << "Перезаписать файлы";
+
 const static QStringList timer_combo_box_list  = QStringList() << "0 секунд (таймер отключён)"
                                                                << "1 секунда"
                                                                << "5 секунд"
@@ -88,7 +89,6 @@ Graphics::Graphics(QWidget* parent, int width, int height)
     setting_combo_boxes();
     setting_edits();
     setting_button();
-    this->setWindowTitle(window_title);
     this->setLayout(layout);
     this->show();
 
@@ -127,8 +127,9 @@ void Graphics::setting_edits(bool is_default_setting){
     var_edit->setFixedSize(right_column_width, label_height);
     mask_edit->setEnabled(is_default_setting);
     var_edit->setMaxLength(hex_length);
+    // в случае установленной маски при клике мышью по виджету
+    // курсор уставнавливается в позицию клика
     var_edit->setInputMask("HHHHHHHHHHHHHHHH");
-    //var_edit->setCursorPosition(0);
     QFont var_edit_font (static_cast<QWidget*>(parent())->font().families(), 20, QFont::Thin);
     var_edit->setFont(var_edit_font);
 }
@@ -164,20 +165,14 @@ bool Graphics::get_rm_state() const{
 }
 
 bool Graphics::get_rewrite_state() const{
-    if (action_combo_box->placeholderText().contains("Перезаписать", Qt::CaseInsensitive))
-        return true;
-    return false;
+    // 0 если установлено "Модифицировать"
+    return action_combo_box->currentIndex();
 }
 
 int Graphics::get_interval_sec() const{
-    //int space_index = timer_combo_box->placeholderText().indexOf("\\s"); // \\s
-    //return  timer_combo_box->placeholderText().sliced(0, space_index).toInt();
-    QString text = timer_combo_box->placeholderText();
-    QString interval;
-    for (int i = 0; i < text.size(); i++){
-        if (text.at(i) == ' ') break;
-        interval += text.at(i);
-    }
+    QString text     = timer_combo_box->itemText(timer_combo_box->currentIndex());
+    int space_index  = text.indexOf(" ");
+    QString interval = text.sliced(0, space_index);
     return interval.toInt();
 }
 
@@ -186,7 +181,6 @@ QString Graphics::get_var() const{
     int zeros_count = number_of_bytes * 2 - var.size();
     for (int i = 0; i < zeros_count; i++)
         var.insert(0, '0');
-    qDebug() << "in get var siz is " << var.size();
     return var;
 }
 

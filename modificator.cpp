@@ -17,7 +17,7 @@ Modificator::Modificator(QList<QString> in_files,
     rm_state_       = rm_state;
     rewrite_state_  = rewrite_state;
     var_            = new QString(var);
-    qDebug() << "in Modificator ctor var is: " << var_->size() <<  *var_;
+    qDebug() << "in Modificator ctor in files  is: " << in_files;
 }
 
 Modificator::~Modificator(){
@@ -27,27 +27,26 @@ Modificator::~Modificator(){
     delete var_;
 }
 
-int Modificator::modification(){
-    QList<QString> open_files;
-    QFile* current_file = new QFile();
+void Modificator::modification(){
+    bool have_open_files = false;
+    QFile* current_file  = new QFile();
     for (int i = 0; i < in_files_->size(); i++){
         current_file->setFileName(in_files_->at(i));
         QDir::setCurrent(*in_dir_);
-        if (current_file->isOpen()) {
-            open_files.push_back(in_files_->at(i));
-        }
-        else {
+        if (!current_file->isOpen()) {
             QSharedPointer<QByteArray> data = file_modification(current_file);
-            write_to_file(current_file, out_dir_, data);
-            // если директории равны, при rm_state_ == rewrite_stete_ == true
+            have_open_files = have_open_files  ||  !write_to_file(current_file, out_dir_, data);
+            // если директории равны, при rm_state_ == rewrite_state_ == true
             // не удалять перезаписанный файл
-            if(rm_state_ && !rewrite_state_)
+            if(rm_state_ && !(*in_dir_ == *out_dir_))
                 rm_file(current_file);
         }
+        else
+            have_open_files = have_open_files || true;
     }
+    qDebug() << "in modif current  file open is " << current_file->isOpen() << " " <<  current_file->openMode();
     delete current_file;
-    /*if (!open_files.isEmpty())*/ emit these_files_open(open_files);
-    return 1;
+    if (have_open_files) emit some_files_open();
 }
 
 QSharedPointer<QByteArray> Modificator::file_modification(QFile* file) const{
@@ -106,20 +105,29 @@ quint8 Modificator::char_to_int(QChar symbol) const{
 }
 
 bool Modificator::write_to_file(const QFile* in_file, const QString* out_dir, const QSharedPointer<QByteArray> data) const{
-    QString out_file_name;
     QDir::setCurrent(*out_dir_);
-    bool is_exist = is_file_name_exist(in_file, out_dir);
-    if (is_exist && !rewrite_state_) out_file_name = modification_out_file_name(in_file);
-    else out_file_name = in_file->fileName();
-    QFile* out_file    = new QFile(out_file_name);
-    if (rewrite_state_) {
-        if (out_file->isOpen()){
-            delete out_file;
-            return 0;
-        }
+    QFile* out_file;
+    bool is_exist   = is_file_name_exist(in_file->fileName(), out_dir);
+
+    if (is_exist && !rewrite_state_){
+        out_file = new QFile(choosing_valid_file_name_in_dir(in_file->fileName(), out_dir));
     }
-    if (is_exist) out_file->open(QIODeviceBase::WriteOnly | QIODeviceBase::ExistingOnly);
-    else out_file->open(QIODeviceBase::WriteOnly | QIODeviceBase::NewOnly);
+    else out_file  = new QFile(in_file->fileName());
+
+    if (rewrite_state_ &&
+        (out_file->isOpen())){
+        delete out_file;
+        return 0;
+    }   
+    QDir::setCurrent(*out_dir_);
+
+    if (is_exist && rewrite_state_){
+        out_file->open(QIODeviceBase::WriteOnly | QIODeviceBase::ExistingOnly);
+    }
+    else {
+        out_file->open(QIODeviceBase::WriteOnly | QIODeviceBase::NewOnly);
+    }
+
     int bytes = out_file->write(*data);
     out_file->close();
     delete out_file;
@@ -131,29 +139,45 @@ bool Modificator::rm_file(QFile* file) const{
     return file->remove();//move to trash
 }
 
-QString Modificator::modification_out_file_name(const QFile* file) const{
-    QString current_name     = file->fileName();
-    QString new_name         = current_name;
+QString Modificator::choosing_valid_file_name_in_dir(const QString file_name, const QString* dir) const{
+    QString new_name = file_name;
+    while (true){
+        new_name = modification_out_file_name(new_name);
+        if (!is_file_name_exist(new_name, dir)) break;
+    }
+    return new_name;
+}
+
+QString Modificator::modification_out_file_name(const QString file_name) const{
+    QString new_name         = file_name;
+    QString current_name     = file_name;
     int first_bracket_index  = current_name.lastIndexOf('(');
     int second_bracket_index = current_name.lastIndexOf(')');
+    int point_index = current_name.lastIndexOf('.');
     // в имени файла уже есть полноценный порядковый номер
     // вида (N)
     if (first_bracket_index != -1 && second_bracket_index != -1) {
-        int number = new_name.sliced(first_bracket_index + 1, second_bracket_index - first_bracket_index - 1).toInt();
+        int number         = current_name.sliced(first_bracket_index + 1, second_bracket_index - first_bracket_index - 1).toInt();
+        new_name           = current_name.sliced(0, first_bracket_index);
         QString number_str = "()";
         number_str.insert(1, QString::number(++number));
-        return new_name.insert(first_bracket_index + 1, number_str);
+        if (point_index != -1){
+            QString format_str = current_name.sliced(point_index);
+            number_str += format_str;
+        }
+        return new_name += number_str;
     }
     // добавление порядкового номера для файла без расширения
-    if (current_name.indexOf('.') == -1) return new_name+= "(1)";
+
+    if (point_index == -1) return new_name += "(1)";
     // добавление порядкового номера для файла с расширением
-    return new_name.insert(first_bracket_index + 1, "(1)");
+    return new_name.insert(point_index, "(1)");
 }
 
-bool Modificator::is_file_name_exist(const QFile* file, const QString* dir) const{
+bool Modificator::is_file_name_exist(const QString file_name, const QString* dir) const{
     QDir directory(*dir);
-    qDebug() << " in is file name exist is: " << directory.exists(file->fileName());
-    return directory.exists(file->fileName());
+    qDebug() << " in is file name exist is: " << directory.exists(file_name);
+    return directory.exists(file_name);
 }
 
 
