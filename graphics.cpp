@@ -177,11 +177,7 @@ int Graphics::get_interval_sec() const{
 }
 
 QString Graphics::get_var() const{
-    QString var     = var_edit->placeholderText().toUpper();
-    int zeros_count = number_of_bytes * 2 - var.size();
-    for (int i = 0; i < zeros_count; i++)
-        var.insert(0, '0');
-    return var;
+    return var_edit->text().toUpper();
 }
 
 void Graphics::on_var_edit_edited(){
@@ -192,7 +188,7 @@ void Graphics::on_var_edit_edited(){
 
 bool Graphics::is_var_edit_correct(){
     if(var_edit->text().isEmpty() ||
-       var_edit->text().length() > hex_length)
+       var_edit->text().length() != hex_length)
         return false;
     else return true;
 }

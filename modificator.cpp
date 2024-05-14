@@ -74,8 +74,10 @@ QSharedPointer<QByteArray> Modificator::read_from_file(QFile* file) const{
 // считается, что входные данные представлены потоком байт, не строковым предсталением
 // операция производится над всеми входными байтами
 bool Modificator::do_operation(QSharedPointer<QByteArray> in_data) const{
+    qDebug() << "in do operation in_data size is: " << in_data->size() << *in_data;
+    qDebug() << "in do operation var_ size is: " << var_->size() << *var_;
     for (int i = 0, var_counter = 0; i < in_data->size(); i++, var_counter++){
-        if (var_counter == 16) var_counter = 0;
+        if (var_counter % 16 == 0) var_counter = 0;
         (*in_data)[i] = do_xor(in_data->at(i), var_->at(var_counter), var_->at(++var_counter));
     }
 }
