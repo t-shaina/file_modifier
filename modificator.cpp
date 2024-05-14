@@ -17,7 +17,6 @@ Modificator::Modificator(QList<QString> in_files,
     rm_state_       = rm_state;
     rewrite_state_  = rewrite_state;
     var_            = new QString(var);
-    qDebug() << "in Modificator ctor in files  is: " << in_files;
 }
 
 Modificator::~Modificator(){
@@ -33,7 +32,7 @@ void Modificator::modification(){
     for (int i = 0; i < in_files_->size(); i++){
         current_file->setFileName(in_files_->at(i));
         QDir::setCurrent(*in_dir_);
-        if (!current_file->isOpen()) {
+        if (!is_open(current_file, in_dir_)) {
             QSharedPointer<QByteArray> data = file_modification(current_file);
             have_open_files = have_open_files  ||  !write_to_file(current_file, out_dir_, data);
             // если директории равны, при rm_state_ == rewrite_state_ == true
@@ -41,23 +40,22 @@ void Modificator::modification(){
             if(rm_state_ && !(*in_dir_ == *out_dir_))
                 rm_file(current_file);
         }
-        else
+        else {
             have_open_files = have_open_files || true;
+        }
     }
-    qDebug() << "in modif current  file open is " << current_file->isOpen() << " " <<  current_file->openMode();
     delete current_file;
     if (have_open_files) emit some_files_open();
 }
 
 QSharedPointer<QByteArray> Modificator::file_modification(QFile* file) const{
     QDir::setCurrent(*in_dir_);
-    qDebug() << "in file modificator current dir: " << *in_dir_;
     if (!file->open(QIODeviceBase::ReadOnly))
         return nullptr;
     if (file->bytesAvailable() == 0)
         return nullptr;
     QSharedPointer<QByteArray> data = read_from_file(file);
-    bool operation_state            = do_operation(data);
+    do_operation(data);
     file->close();
     return data;
 }
@@ -73,9 +71,7 @@ QSharedPointer<QByteArray> Modificator::read_from_file(QFile* file) const{
 
 // считается, что входные данные представлены потоком байт, не строковым предсталением
 // операция производится над всеми входными байтами
-bool Modificator::do_operation(QSharedPointer<QByteArray> in_data) const{
-    qDebug() << "in do operation in_data size is: " << in_data->size() << *in_data;
-    qDebug() << "in do operation var_ size is: " << var_->size() << *var_;
+void Modificator::do_operation(QSharedPointer<QByteArray> in_data) const{
     for (int i = 0, var_counter = 0; i < in_data->size(); i++, var_counter++){
         if (var_counter % 16 == 0) var_counter = 0;
         (*in_data)[i] = do_xor(in_data->at(i), var_->at(var_counter), var_->at(++var_counter));
@@ -136,9 +132,9 @@ bool Modificator::write_to_file(const QFile* in_file, const QString* out_dir, co
     return bytes;
 }
 
-bool Modificator::rm_file(QFile* file) const{
+void Modificator::rm_file(QFile* file) const{
     QDir::setCurrent(*in_dir_);
-    return file->remove();//move to trash
+    file->remove();
 }
 
 QString Modificator::choosing_valid_file_name_in_dir(const QString file_name, const QString* dir) const{
@@ -178,8 +174,11 @@ QString Modificator::modification_out_file_name(const QString file_name) const{
 
 bool Modificator::is_file_name_exist(const QString file_name, const QString* dir) const{
     QDir directory(*dir);
-    qDebug() << " in is file name exist is: " << directory.exists(file_name);
     return directory.exists(file_name);
 }
 
-
+bool Modificator::is_open(const QFile* file, const QString* dir) const{
+    // должна происходить проверка
+    // открыт ли файл в системе
+    return false;
+}

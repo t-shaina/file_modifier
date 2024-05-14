@@ -55,7 +55,7 @@ Graphics::Graphics(QWidget* parent, int width, int height)
     QLabel* action_label  = new QLabel(action_label_text, this);
     QLabel* timer_label   = new QLabel(timer_label_text, this);
     QLabel* var_label     = new QLabel(var_label_text, this);
-    labels = new QVector<QSharedPointer<QLabel>>(6);
+    labels                = new QVector<QSharedPointer<QLabel>>(6);
     labels->push_back(QSharedPointer<QLabel>(in_dir_label));
     labels->push_back(QSharedPointer<QLabel>(mask_label));
     labels->push_back(QSharedPointer<QLabel>(out_dir_label));

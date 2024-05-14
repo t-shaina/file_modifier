@@ -8,7 +8,7 @@ const static QString ok_button_text           = "ОK";
 const static int buttons_height               = 30;
 const static int buttons_width                = 90;
 const static QString alert_message_text       = "Некоторые файлы открыты и не могут быть обработаны ";
-const static QString alert_window_title       = " Проблема";
+const static QString alert_window_title       = "Проблема";
 
 
 Alert_dialog::Alert_dialog(QWidget* parent, const QList<QString> files)
@@ -37,10 +37,7 @@ Alert_dialog::Alert_dialog(QWidget* parent, const QList<QString> files)
 }
 
 Alert_dialog::~Alert_dialog(){
-    delete main_layout;
-    //
-    //delete alert_label;
-    //delete ok_alert_button;
+    delete main_layout;    
 }
 
 void Alert_dialog::on_ok_alert_button_clicked(){

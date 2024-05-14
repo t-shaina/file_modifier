@@ -45,4 +45,5 @@ private:
     Graphics* graphics;
     Alert_dialog* msg;
 };
+
 #endif // MAINWINDOW_H

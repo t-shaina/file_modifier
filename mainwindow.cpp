@@ -9,8 +9,7 @@ const static QString window_font  = "Cochin";
 const static QString window_title = "Модификатор файлов";
 
 MainWindow::MainWindow(QApplication* parent)
-    :/* QMainWindow(parent)
-    ,*/ ui(new Ui::MainWindow){
+    : ui(new Ui::MainWindow){
     ui->setupUi(this);
     this->setFixedSize(window_width, window_height);
     QFont main_window_font(window_font, 0, 0);

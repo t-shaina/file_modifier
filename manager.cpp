@@ -23,17 +23,17 @@ void Manager::processing(const Current_settings* setting){
                                   setting->is_rewrite_,
                                   *setting->var_);
     connect(modificator, SIGNAL(some_files_open()), this, SLOT(files_open()));
-    qDebug() << "in processing intervsl_sec is " << setting->interval_sec_ ;
     if (setting->interval_sec_ != 0){
         timer->setInterval(setting->interval_sec_ * sec_to_msec);
         timer->start();
     }
     working();
-
 }
 
 void Manager::working(){
     modificator->modification();
+    modificator->Modificator::~Modificator();
+    modificator = nullptr;
 }
 
 QList<QString> Manager::apply_mask(QString* in_dir, QString* mask) const{
@@ -46,7 +46,6 @@ QList<QString> Manager::apply_mask(QString* in_dir, QString* mask) const{
     //  не будет означать произвольное количество символов
     for (auto i = masks.begin(); i != masks.end(); ++i){
         int point_index = i->lastIndexOf('.', 0);
-        qDebug() << point_index;
         if (point_index == -1) continue;
         if (point_index == 0) i->insert(point_index, '*');
     }
@@ -54,20 +53,6 @@ QList<QString> Manager::apply_mask(QString* in_dir, QString* mask) const{
     if (!mask->isEmpty()) rez = dir.entryList(masks, QDir::Files | QDir::Readable);
     else rez = dir.entryList(QDir::Files | QDir::Readable);
     return rez;
-}
-
-QString Manager::adding_slash(QString* dir) const{
-    QString rez_dir;
-    int offset = 0;
-    for (int i = 0; i < dir->size(); ++i){
-        int index = dir->indexOf('\\', offset++);
-        if (index == -1) break;
-        rez_dir += dir->at(i);
-        if (index == i){
-            rez_dir += '\\';
-        }
-    }
-    return rez_dir;
 }
 
 void Manager::files_open() {

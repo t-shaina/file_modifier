@@ -26,7 +26,6 @@ private:
     Modificator* modificator;
 
     QVector<QString> apply_mask(QString* in_dir, QString* mask) const;
-    QString adding_slash(QString* dir)                          const;
 
 public slots:
 
@@ -41,31 +40,3 @@ signals:
 
 #endif // MANAGER_H
 
-/*int size = number_of_bytes * 8;
-QVector<bool> rez;
-rez.resize(size);
-int vector_counter = 0;
-for (int i = 0; i < hex.size(); i++){
-    int ascii = hex.at(i).toLatin1();
-    int digit;
-    // [0;9]
-    if (ascii >= 48 && ascii <= 57) {
-        digit = hex.at(i).digitValue();
-
-    }
-    // [A; F]
-    else if (ascii >= 65 && ascii <= 70) {
-        digit = ascii - ascii_diff_between_uppercase_letters;
-    }
-    // [a;f]
-    else if (ascii >= 97 && ascii <= 102) {
-        digit = ascii - ascii_diff_between_lowercase_letters;
-    }
-    //else  обработка случая
-    int dec = 0b0000;
-    for (int j = 0 ; j < digit; j++){
-        dec = dec + 0b0001;
-    }
-    //rez.at(vector_counter) = dec >> 4;
-    vector_counter++;
-}*/

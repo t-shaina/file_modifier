@@ -1,8 +1,7 @@
-#ifndef GRAGHICS_H
-#define GRAGHICS_H
+#ifndef GRAPHICS_H
+#define GRAPHICS_H
 
 #include "directory_group.h"
-#include "dialog.h"
 #include "qcheckbox.h"
 #include "qcombobox.h"
 
@@ -60,4 +59,4 @@ signals:
     void settings_ready();
 };
 
-#endif // GRAGHICS_H
+#endif // GRAPHICS_H
