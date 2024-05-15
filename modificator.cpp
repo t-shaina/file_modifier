@@ -1,4 +1,6 @@
 #include "modificator.h"
+
+#include <stdio.h>
 #include <QDir>
 
 const static int number_of_bytes = 8;
@@ -35,9 +37,10 @@ void Modificator::modification(){
         if (!is_open(current_file, in_dir_)) {
             QSharedPointer<QByteArray> data = file_modification(current_file);
             have_open_files = have_open_files  ||  !write_to_file(current_file, out_dir_, data);
+            qDebug() << "have open files after write is" << have_open_files;
             // если директории равны, при rm_state_ == rewrite_state_ == true
             // не удалять перезаписанный файл
-            if(rm_state_ && !(*in_dir_ == *out_dir_))
+            if (rm_state_ && !(*in_dir_ == *out_dir_))
                 rm_file(current_file);
         }
         else {

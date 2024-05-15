@@ -17,6 +17,7 @@ Directory_group::Directory_group(QWidget* parent, int width, int height)
     layout = new QHBoxLayout(this);
     button = new QPushButton(button_text, this);
     edit   = new QLineEdit(QDir::rootPath(), this);
+    dialog = nullptr;
     button->setFixedSize(QSize(buttons_width, height));
     edit->setFixedHeight(height);
     edit->setFixedWidth(width - horizontal_spacing - buttons_width);
@@ -35,6 +36,7 @@ Directory_group::~Directory_group(){
 }
 
 void Directory_group::create_file_system_dialog(){
+    delete dialog;
     dialog = new Dialog(this);
     connect(dialog, SIGNAL(directory_selected(QString)), this, SLOT(set_edit(QString)));
     connect(dialog, SIGNAL(cancel_button_selected()), this, SLOT(destroy_dialog()));
